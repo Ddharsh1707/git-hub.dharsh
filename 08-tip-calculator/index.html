@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tip Calculator</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#c5e4e7; font-family:Arial, sans-serif; }
+  .card { background:#fff; padding:25px; border-radius:14px; width:320px; max-width:92vw; }
+  label { display:block; margin-top:14px; color:#5e7a7d; font-weight:bold; }
+  input { width:100%; padding:10px; font-size:18px; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; margin-top:5px; }
+  .tips { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:6px; }
+  .tips button { padding:10px; border:none; border-radius:6px; background:#00474b; color:#fff; font-size:16px; cursor:pointer; }
+  .tips button.active { background:#26c2ae; color:#00474b; }
+  .result { background:#00474b; color:#fff; padding:15px; border-radius:10px; margin-top:20px; }
+  .row { display:flex; justify-content:space-between; font-size:18px; margin:6px 0; }
+  .row b { color:#26c2ae; font-size:24px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>💰 Tip Calculator</h2>
+  <label>Bill amount</label>
+  <input type="number" id="bill" placeholder="0.00" min="0">
+  <label>Tip %</label>
+  <div class="tips" id="tips">
+    <button data-t="5">5%</button><button data-t="10">10%</button><button data-t="15" class="active">15%</button>
+    <button data-t="18">18%</button><button data-t="20">20%</button><button data-t="25">25%</button>
+  </div>
+  <label>Number of people</label>
+  <input type="number" id="people" value="1" min="1">
+  <div class="result">
+    <div class="row"><span>Tip / person</span><b id="tipOut">0.00</b></div>
+    <div class="row"><span>Total / person</span><b id="totalOut">0.00</b></div>
+  </div>
+</div>
+<script>
+  let tip = 15;
+  const bill = document.getElementById('bill');
+  const people = document.getElementById('people');
+
+  function calc() {
+    const b = parseFloat(bill.value) || 0;
+    const p = Math.max(1, parseInt(people.value) || 1);
+    const tipAmount = b * tip / 100;
+    document.getElementById('tipOut').textContent = (tipAmount / p).toFixed(2);
+    document.getElementById('totalOut').textContent = ((b + tipAmount) / p).toFixed(2);
+  }
+
+  document.querySelectorAll('#tips button').forEach(btn => btn.onclick = () => {
+    document.querySelector('#tips .active')?.classList.remove('active');
+    btn.classList.add('active');
+    tip = +btn.dataset.t;
+    calc();
+  });
+  bill.oninput = calc;
+  people.oninput = calc;
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Counter</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#fafafa; font-family:Arial, sans-serif; }
+  #count { font-size:100px; font-weight:bold; margin:20px; transition:color .2s; }
+  .btns { display:flex; gap:12px; }
+  button { padding:14px 24px; font-size:20px; border:none; border-radius:8px; cursor:pointer; color:#fff; }
+  #dec { background:#e74c3c; } #reset { background:#7f8c8d; } #inc { background:#27ae60; }
+  .step { margin-top:20px; }
+  .step input { width:60px; padding:6px; font-size:16px; }
+</style>
+</head>
+<body>
+  <h1>Counter</h1>
+  <div id="count">0</div>
+  <div class="btns">
+    <button id="dec">− Decrease</button>
+    <button id="reset">Reset</button>
+    <button id="inc">+ Increase</button>
+  </div>
+  <div class="step">Step: <input type="number" id="step" value="1" min="1"></div>
+<script>
+  let count = 0;
+  const el = document.getElementById('count');
+  const step = () => Math.max(1, parseInt(document.getElementById('step').value) || 1);
+
+  function render() {
+    el.textContent = count;
+    el.style.color = count > 0 ? '#27ae60' : count < 0 ? '#e74c3c' : '#333';
+  }
+
+  document.getElementById('inc').onclick = () => { count += step(); render(); };
+  document.getElementById('dec').onclick = () => { count -= step(); render(); };
+  document.getElementById('reset').onclick = () => { count = 0; render(); };
+</script>
+</body>
+</html>

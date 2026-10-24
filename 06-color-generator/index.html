@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Palette Generator</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; flex-direction:column; font-family:Arial, sans-serif; }
+  .palette { flex:1; display:flex; flex-wrap:wrap; }
+  .swatch { flex:1 1 150px; min-height:120px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:30px; cursor:pointer; }
+  .swatch span { background:rgba(255,255,255,.85); padding:6px 12px; border-radius:6px; font-family:monospace; font-size:18px; }
+  footer { padding:15px; text-align:center; background:#222; color:#fff; }
+  button { padding:10px 24px; font-size:16px; border:none; border-radius:6px; cursor:pointer; }
+</style>
+</head>
+<body>
+  <div class="palette" id="palette"></div>
+  <footer>
+    <button id="gen">Generate (or press Space)</button>
+    <p>Click any color to copy its code.</p>
+  </footer>
+<script>
+  const palette = document.getElementById('palette');
+  const randomHex = () => '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+
+  function generate() {
+    palette.innerHTML = '';
+    for (let i = 0; i < 5; i++) {
+      const color = randomHex();
+      const div = document.createElement('div');
+      div.className = 'swatch';
+      div.style.background = color;
+      const label = document.createElement('span');
+      label.textContent = color;
+      div.append(label);
+      div.onclick = () => {
+        navigator.clipboard?.writeText(color);
+        label.textContent = 'Copied!';
+        setTimeout(() => label.textContent = color, 800);
+      };
+      palette.append(div);
+    }
+  }
+
+  document.getElementById('gen').onclick = generate;
+  document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); generate(); } });
+  generate();
+</script>
+</body>
+</html>

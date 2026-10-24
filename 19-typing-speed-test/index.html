@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Typing Speed Test</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#282c34; color:#abb2bf; font-family:Arial, sans-serif; }
+  .box { width:640px; max-width:92vw; }
+  #text { font-size:22px; line-height:1.6; font-family:monospace; background:#21252b; padding:20px; border-radius:8px; }
+  .ok { color:#98c379; } .bad { color:#e06c75; background:#3b2a2e; } .cur { border-bottom:2px solid #61afef; }
+  textarea { width:100%; height:90px; margin-top:15px; font-size:18px; padding:10px; box-sizing:border-box; border-radius:8px; border:none; font-family:monospace; }
+  .stats { display:flex; justify-content:space-around; margin-top:15px; font-size:20px; }
+  .stats b { color:#61afef; }
+  button { margin-top:15px; padding:10px 20px; border:none; border-radius:6px; background:#61afef; color:#282c34; font-size:16px; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>⌨️ Typing Speed Test</h1>
+  <div id="text"></div>
+  <textarea id="input" placeholder="Start typing here — the timer starts on your first key..."></textarea>
+  <div class="stats">
+    <div>Time: <b id="time">0</b>s</div>
+    <div>WPM: <b id="wpm">0</b></div>
+    <div>Accuracy: <b id="acc">100</b>%</div>
+  </div>
+  <button id="restart">New text</button>
+</div>
+<script>
+  const texts = [
+    'The quick brown fox jumps over the lazy dog near the river bank.',
+    'Practice makes progress, so keep typing a little bit every single day.',
+    'JavaScript lets you build interactive pages that respond to the user.',
+    'A small project finished is worth more than a big project never started.',
+  ];
+  let target, start, timer;
+  const textEl = document.getElementById('text');
+  const input = document.getElementById('input');
+
+  function reset() {
+    target = texts[Math.floor(Math.random() * texts.length)];
+    start = null; clearInterval(timer);
+    input.value = ''; input.disabled = false;
+    ['time', 'wpm'].forEach(id => document.getElementById(id).textContent = 0);
+    document.getElementById('acc').textContent = 100;
+    paint();
+  }
+
+  function paint() {
+    const typed = input.value;
+    textEl.innerHTML = '';
+    [...target].forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.textContent = ch;
+      if (i < typed.length) span.className = typed[i] === ch ? 'ok' : 'bad';
+      else if (i === typed.length) span.className = 'cur';
+      textEl.append(span);
+    });
+  }
+
+  function stats() {
+    const secs = (Date.now() - start) / 1000;
+    const typed = input.value;
+    const correct = [...typed].filter((c, i) => c === target[i]).length;
+    document.getElementById('time').textContent = Math.floor(secs);
+    document.getElementById('wpm').textContent = secs > 0 ? Math.round((correct / 5) / (secs / 60)) : 0;
+    document.getElementById('acc').textContent = typed.length ? Math.round(correct / typed.length * 100) : 100;
+  }
+
+  input.oninput = () => {
+    if (!start) { start = Date.now(); timer = setInterval(stats, 250); }
+    paint(); stats();
+    if (input.value.length >= target.length) { clearInterval(timer); input.disabled = true; }
+  };
+
+  document.getElementById('restart').onclick = reset;
+  reset();
+</script>
+</body>
+</html>

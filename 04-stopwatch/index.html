@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stopwatch</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#0f2027; color:#fff; font-family:Arial, sans-serif; }
+  #display { font-size:clamp(40px, 12vw, 80px); font-family:monospace; margin-bottom:20px; }
+  .btns { display:flex; gap:10px; }
+  button { padding:12px 22px; font-size:16px; border:none; border-radius:30px; cursor:pointer; color:#fff; }
+  #start { background:#10ac84; } #lap { background:#2e86de; } #reset { background:#ee5253; }
+  ol { margin-top:20px; font-family:monospace; font-size:18px; max-height:40vh; overflow:auto; }
+</style>
+</head>
+<body>
+  <div id="display">00:00.00</div>
+  <div class="btns">
+    <button id="start">Start</button>
+    <button id="lap">Lap</button>
+    <button id="reset">Reset</button>
+  </div>
+  <ol id="laps"></ol>
+<script>
+  let startTime = 0, elapsed = 0, timer = null;
+  const display = document.getElementById('display');
+  const startBtn = document.getElementById('start');
+
+  function format(ms) {
+    const m = Math.floor(ms / 60000);
+    const s = Math.floor(ms / 1000) % 60;
+    const cs = Math.floor(ms / 10) % 100;
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;
+  }
+
+  function update() { display.textContent = format(elapsed + (timer ? Date.now() - startTime : 0)); }
+
+  startBtn.onclick = () => {
+    if (timer) {
+      elapsed += Date.now() - startTime;
+      clearInterval(timer); timer = null;
+      startBtn.textContent = 'Start';
+    } else {
+      startTime = Date.now();
+      timer = setInterval(update, 10);
+      startBtn.textContent = 'Pause';
+    }
+  };
+
+  document.getElementById('lap').onclick = () => {
+    if (!timer) return;
+    const li = document.createElement('li');
+    li.textContent = display.textContent;
+    document.getElementById('laps').append(li);
+  };
+
+  document.getElementById('reset').onclick = () => {
+    clearInterval(timer); timer = null; elapsed = 0;
+    startBtn.textContent = 'Start';
+    document.getElementById('laps').innerHTML = '';
+    update();
+  };
+</script>
+</body>
+</html>

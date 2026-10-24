@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Card Game</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#6c5ce7; font-family:Arial, sans-serif; color:#fff; }
+  .board { display:grid; grid-template-columns:repeat(4, 80px); gap:10px; }
+  .card { width:80px; height:80px; border-radius:10px; background:#a29bfe; font-size:40px; display:flex; align-items:center; justify-content:center; cursor:pointer; user-select:none; transition:transform .2s; }
+  .card.open, .card.matched { background:#fff; }
+  .card.matched { opacity:.6; cursor:default; }
+  .card:not(.open):not(.matched) span { visibility:hidden; }
+  .info { margin:15px; font-size:20px; }
+  button { padding:10px 20px; border:none; border-radius:6px; background:#fd79a8; color:#fff; font-size:16px; cursor:pointer; }
+</style>
+</head>
+<body>
+  <h1>🧠 Memory Game</h1>
+  <div class="board" id="board"></div>
+  <div class="info">Moves: <span id="moves">0</span> &nbsp; <span id="win"></span></div>
+  <button id="restart">Restart</button>
+<script>
+  const icons = ['🍎', '🍌', '🍇', '🍒', '🍉', '🍋', '🥝', '🍑'];
+  let first = null, lock = false, moves = 0, matched = 0;
+  const board = document.getElementById('board');
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function start() {
+    board.innerHTML = '';
+    first = null; lock = false; moves = 0; matched = 0;
+    document.getElementById('moves').textContent = 0;
+    document.getElementById('win').textContent = '';
+    shuffle([...icons, ...icons]).forEach(icon => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.icon = icon;
+      card.innerHTML = `<span>${icon}</span>`;
+      card.onclick = () => flip(card);
+      board.append(card);
+    });
+  }
+
+  function flip(card) {
+    if (lock || card === first || card.classList.contains('matched')) return;
+    card.classList.add('open');
+    if (!first) { first = card; return; }
+    moves++;
+    document.getElementById('moves').textContent = moves;
+    if (first.dataset.icon === card.dataset.icon) {
+      first.classList.add('matched'); card.classList.add('matched');
+      first = null; matched++;
+      if (matched === icons.length) document.getElementById('win').textContent = '🎉 You won!';
+    } else {
+      lock = true;
+      setTimeout(() => {
+        first.classList.remove('open'); card.classList.remove('open');
+        first = null; lock = false;
+      }, 800);
+    }
+  }
+
+  document.getElementById('restart').onclick = start;
+  start();
+</script>
+</body>
+</html>

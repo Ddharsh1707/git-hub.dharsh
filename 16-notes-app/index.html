@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notes App</title>
+<style>
+  body { margin:0; min-height:100vh; background:#fef9e7; font-family:Arial, sans-serif; padding:20px; box-sizing:border-box; }
+  h1 { text-align:center; }
+  #add { display:block; margin:0 auto 20px; padding:10px 20px; font-size:16px; border:none; border-radius:6px; background:#f39c12; color:#fff; cursor:pointer; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px; }
+  .note { background:#fff176; border-radius:8px; box-shadow:0 3px 8px rgba(0,0,0,.15); display:flex; flex-direction:column; }
+  .note textarea { flex:1; min-height:160px; border:none; background:transparent; padding:12px; font-size:16px; resize:vertical; font-family:inherit; }
+  .note textarea:focus { outline:none; }
+  .note button { align-self:flex-end; margin:6px; border:none; background:#e74c3c; color:#fff; border-radius:4px; padding:4px 10px; cursor:pointer; }
+</style>
+</head>
+<body>
+  <h1>🗒️ Sticky Notes</h1>
+  <button id="add">+ Add note</button>
+  <div class="grid" id="grid"></div>
+<script>
+  let notes = [];
+  try { notes = JSON.parse(localStorage.getItem('notes')) || []; } catch {}
+  const grid = document.getElementById('grid');
+  const save = () => { try { localStorage.setItem('notes', JSON.stringify(notes)); } catch {} };
+
+  function render() {
+    grid.innerHTML = '';
+    notes.forEach((text, i) => {
+      const note = document.createElement('div');
+      note.className = 'note';
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.placeholder = 'Write something...';
+      ta.oninput = () => { notes[i] = ta.value; save(); };
+      const del = document.createElement('button');
+      del.textContent = 'Delete';
+      del.onclick = () => { notes.splice(i, 1); save(); render(); };
+      note.append(ta, del);
+      grid.append(note);
+    });
+  }
+
+  document.getElementById('add').onclick = () => { notes.push(''); save(); render(); grid.lastChild.querySelector('textarea').focus(); };
+  render();
+</script>
+</body>
+</html>

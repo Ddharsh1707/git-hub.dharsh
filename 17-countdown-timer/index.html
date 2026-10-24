@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Countdown Timer</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#2c3e50; color:#fff; font-family:Arial, sans-serif; text-align:center; padding:16px; box-sizing:border-box; }
+  input { padding:10px; font-size:16px; border-radius:6px; border:none; }
+  button { padding:10px 18px; font-size:16px; border:none; border-radius:6px; background:#e67e22; color:#fff; cursor:pointer; margin-left:6px; }
+  .units { display:flex; gap:20px; margin-top:40px; flex-wrap:wrap; justify-content:center; }
+  .unit { background:#34495e; padding:20px; border-radius:10px; min-width:90px; }
+  .unit b { display:block; font-size:48px; }
+  #done { font-size:28px; margin-top:25px; }
+</style>
+</head>
+<body>
+  <h1>⏳ Countdown Timer</h1>
+  <div>
+    <input type="datetime-local" id="target">
+    <button id="start">Start</button>
+  </div>
+  <div class="units">
+    <div class="unit"><b id="d">0</b>Days</div>
+    <div class="unit"><b id="h">0</b>Hours</div>
+    <div class="unit"><b id="m">0</b>Minutes</div>
+    <div class="unit"><b id="s">0</b>Seconds</div>
+  </div>
+  <div id="done"></div>
+<script>
+  let timer = null;
+  const input = document.getElementById('target');
+  // Default target: one day from now
+  const tomorrow = new Date(Date.now() + 864e5 - new Date().getTimezoneOffset() * 6e4);
+  input.value = tomorrow.toISOString().slice(0, 16);
+
+  function update(end) {
+    const diff = end - Date.now();
+    if (diff <= 0) {
+      clearInterval(timer);
+      ['d','h','m','s'].forEach(id => document.getElementById(id).textContent = 0);
+      document.getElementById('done').textContent = '🎉 Time is up!';
+      return;
+    }
+    document.getElementById('d').textContent = Math.floor(diff / 864e5);
+    document.getElementById('h').textContent = Math.floor(diff / 36e5) % 24;
+    document.getElementById('m').textContent = Math.floor(diff / 6e4) % 60;
+    document.getElementById('s').textContent = Math.floor(diff / 1e3) % 60;
+  }
+
+  document.getElementById('start').onclick = () => {
+    const end = new Date(input.value).getTime();
+    if (!end) return;
+    clearInterval(timer);
+    document.getElementById('done').textContent = '';
+    update(end);
+    timer = setInterval(() => update(end), 1000);
+  };
+</script>
+</body>
+</html>

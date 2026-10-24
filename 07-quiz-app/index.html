@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz App</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#f0f4f8; font-family:Arial, sans-serif; }
+  .quiz { background:#fff; width:420px; max-width:92vw; padding:25px; border-radius:12px; box-shadow:0 5px 20px rgba(0,0,0,.1); }
+  .opt { display:block; width:100%; text-align:left; margin:8px 0; padding:12px; border:2px solid #ddd; border-radius:8px; background:#fff; font-size:16px; cursor:pointer; }
+  .opt:hover { border-color:#4a90e2; }
+  .correct { background:#d4edda; border-color:#28a745; }
+  .wrong { background:#f8d7da; border-color:#dc3545; }
+  #next { margin-top:15px; padding:10px 20px; border:none; border-radius:6px; background:#4a90e2; color:#fff; font-size:16px; cursor:pointer; display:none; }
+  .progress { color:#888; font-size:14px; }
+</style>
+</head>
+<body>
+<div class="quiz" id="quiz">
+  <p class="progress" id="progress"></p>
+  <h2 id="question"></h2>
+  <div id="options"></div>
+  <button id="next">Next</button>
+</div>
+<script>
+  const questions = [
+    { q: 'What does HTML stand for?', a: ['Hyper Text Markup Language', 'High Tech Modern Language', 'Home Tool Markup Language', 'Hyperlinks Text Mark Language'], c: 0 },
+    { q: 'Which language styles web pages?', a: ['Python', 'CSS', 'Java', 'C++'], c: 1 },
+    { q: 'Which symbol starts a comment in JavaScript?', a: ['#', '<!--', '//', '--'], c: 2 },
+    { q: 'What is 7 × 8?', a: ['54', '56', '64', '48'], c: 1 },
+    { q: 'Which planet is known as the Red Planet?', a: ['Venus', 'Jupiter', 'Mars', 'Saturn'], c: 2 },
+  ];
+  let index = 0, score = 0;
+  const nextBtn = document.getElementById('next');
+
+  function show() {
+    const item = questions[index];
+    document.getElementById('progress').textContent = `Question ${index + 1} of ${questions.length}`;
+    document.getElementById('question').textContent = item.q;
+    const opts = document.getElementById('options');
+    opts.innerHTML = '';
+    nextBtn.style.display = 'none';
+    item.a.forEach((text, i) => {
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.textContent = text;
+      b.onclick = () => {
+        [...opts.children].forEach(x => x.disabled = true);
+        opts.children[item.c].classList.add('correct');
+        if (i === item.c) score++; else b.classList.add('wrong');
+        nextBtn.style.display = 'inline-block';
+      };
+      opts.append(b);
+    });
+  }
+
+  nextBtn.onclick = () => {
+    index++;
+    if (index < questions.length) return show();
+    document.getElementById('quiz').innerHTML =
+      `<h2>Quiz finished!</h2><p>You scored ${score} out of ${questions.length}.</p><button class="opt" onclick="location.reload()">Play again</button>`;
+  };
+
+  show();
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temperature Converter</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#ff9a9e,#a1c4fd); font-family:Arial, sans-serif; }
+  .card { background:#fff; padding:30px; border-radius:14px; width:300px; max-width:92vw; }
+  label { display:block; margin-top:15px; font-weight:bold; color:#555; }
+  input { width:100%; padding:12px; font-size:20px; box-sizing:border-box; border:2px solid #ddd; border-radius:8px; margin-top:5px; }
+  input:focus { border-color:#a1c4fd; outline:none; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>🌡️ Temperature Converter</h2>
+  <p>Type in any box — the others update.</p>
+  <label>Celsius (°C)</label><input type="number" id="c">
+  <label>Fahrenheit (°F)</label><input type="number" id="f">
+  <label>Kelvin (K)</label><input type="number" id="k">
+</div>
+<script>
+  const c = document.getElementById('c'), f = document.getElementById('f'), k = document.getElementById('k');
+  const round = n => Math.round(n * 100) / 100;
+
+  function fromCelsius(val, skip) {
+    if (skip !== c) c.value = round(val);
+    if (skip !== f) f.value = round(val * 9 / 5 + 32);
+    if (skip !== k) k.value = round(val + 273.15);
+  }
+
+  c.oninput = () => c.value === '' ? (f.value = k.value = '') : fromCelsius(+c.value, c);
+  f.oninput = () => f.value === '' ? (c.value = k.value = '') : fromCelsius((+f.value - 32) * 5 / 9, f);
+  k.oninput = () => k.value === '' ? (c.value = f.value = '') : fromCelsius(+k.value - 273.15, k);
+</script>
+</body>
+</html>

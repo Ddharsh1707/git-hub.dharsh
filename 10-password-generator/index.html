@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Password Generator</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#2d3436; font-family:Arial, sans-serif; color:#fff; }
+  .card { background:#353b48; padding:25px; border-radius:12px; width:340px; max-width:92vw; }
+  .out { display:flex; gap:8px; }
+  #pwd { flex:1; padding:12px; font-size:18px; font-family:monospace; border:none; border-radius:6px; background:#1e272e; color:#0be881; min-width:0; }
+  button { padding:10px 14px; border:none; border-radius:6px; cursor:pointer; background:#0be881; color:#1e272e; font-weight:bold; }
+  label { display:flex; justify-content:space-between; margin:12px 0; }
+  #gen { width:100%; margin-top:10px; padding:12px; font-size:16px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>🔐 Password Generator</h2>
+  <div class="out"><input id="pwd" readonly><button id="copy">Copy</button></div>
+  <label>Length: <span id="lenVal">16</span></label>
+  <input type="range" id="len" min="6" max="40" value="16" style="width:100%">
+  <label>Uppercase <input type="checkbox" id="upper" checked></label>
+  <label>Lowercase <input type="checkbox" id="lower" checked></label>
+  <label>Numbers <input type="checkbox" id="nums" checked></label>
+  <label>Symbols <input type="checkbox" id="syms" checked></label>
+  <button id="gen">Generate</button>
+</div>
+<script>
+  const sets = {
+    upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    lower: 'abcdefghijklmnopqrstuvwxyz',
+    nums: '0123456789',
+    syms: '!@#$%^&*()-_=+[]{};:,.?/'
+  };
+  const len = document.getElementById('len');
+  len.oninput = () => document.getElementById('lenVal').textContent = len.value;
+
+  function generate() {
+    const chars = Object.keys(sets).filter(k => document.getElementById(k).checked).map(k => sets[k]).join('');
+    if (!chars) { document.getElementById('pwd').value = 'Pick at least one option'; return; }
+    // crypto.getRandomValues gives secure random numbers
+    const rand = new Uint32Array(+len.value);
+    crypto.getRandomValues(rand);
+    document.getElementById('pwd').value = [...rand].map(n => chars[n % chars.length]).join('');
+  }
+
+  document.getElementById('gen').onclick = generate;
+  document.getElementById('copy').onclick = () => navigator.clipboard?.writeText(document.getElementById('pwd').value);
+  generate();
+</script>
+</body>
+</html>

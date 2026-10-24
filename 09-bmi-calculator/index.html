@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BMI Calculator</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(120deg,#84fab0,#8fd3f4); font-family:Arial, sans-serif; }
+  .card { background:#fff; padding:30px; border-radius:14px; width:300px; max-width:92vw; text-align:center; }
+  input { width:100%; padding:10px; margin:8px 0; font-size:16px; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; }
+  button { width:100%; padding:12px; border:none; border-radius:6px; background:#0984e3; color:#fff; font-size:16px; cursor:pointer; margin-top:8px; }
+  #bmi { font-size:42px; font-weight:bold; margin:15px 0 5px; }
+  #cat { font-size:18px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>⚖️ BMI Calculator</h2>
+  <input type="number" id="height" placeholder="Height (cm)">
+  <input type="number" id="weight" placeholder="Weight (kg)">
+  <button id="calc">Calculate</button>
+  <div id="bmi"></div>
+  <div id="cat"></div>
+</div>
+<script>
+  document.getElementById('calc').onclick = () => {
+    const h = parseFloat(document.getElementById('height').value) / 100;
+    const w = parseFloat(document.getElementById('weight').value);
+    const bmiEl = document.getElementById('bmi');
+    const catEl = document.getElementById('cat');
+    if (!h || !w || h <= 0 || w <= 0) { bmiEl.textContent = ''; catEl.textContent = 'Please enter valid numbers.'; return; }
+    const bmi = w / (h * h);
+    let cat, color;
+    if (bmi < 18.5) { cat = 'Underweight'; color = '#0984e3'; }
+    else if (bmi < 25) { cat = 'Normal weight'; color = '#00b894'; }
+    else if (bmi < 30) { cat = 'Overweight'; color = '#fdcb6e'; }
+    else { cat = 'Obese'; color = '#d63031'; }
+    bmiEl.textContent = bmi.toFixed(1);
+    bmiEl.style.color = color;
+    catEl.textContent = cat;
+  };
+</script>
+</body>
+</html>

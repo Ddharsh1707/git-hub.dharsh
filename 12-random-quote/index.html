@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Quote Generator</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; font-family:Georgia, serif; transition:background .5s; }
+  .card { background:#fff; padding:35px; border-radius:12px; width:500px; max-width:90vw; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.2); }
+  #quote { font-size:24px; line-height:1.4; }
+  #author { margin-top:15px; color:#666; font-style:italic; }
+  button { margin-top:25px; padding:12px 24px; font-size:16px; border:none; border-radius:6px; color:#fff; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div id="quote"></div>
+  <div id="author"></div>
+  <button id="new">New Quote</button>
+</div>
+<script>
+  const quotes = [
+    ['The best way to get started is to quit talking and begin doing.', 'Walt Disney'],
+    ['It always seems impossible until it is done.', 'Nelson Mandela'],
+    ['Simplicity is the soul of efficiency.', 'Austin Freeman'],
+    ['First, solve the problem. Then, write the code.', 'John Johnson'],
+    ['Learning never exhausts the mind.', 'Leonardo da Vinci'],
+    ['Stay hungry, stay foolish.', 'Steve Jobs'],
+    ['The secret of getting ahead is getting started.', 'Mark Twain'],
+    ['Code is like humor. When you have to explain it, it is bad.', 'Cory House'],
+  ];
+  const colors = ['#16a085', '#27ae60', '#2c3e50', '#f39c12', '#e74c3c', '#9b59b6', '#2980b9'];
+  let last = -1;
+
+  function newQuote() {
+    let i;
+    do { i = Math.floor(Math.random() * quotes.length); } while (i === last);
+    last = i;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    document.getElementById('quote').textContent = '“' + quotes[i][0] + '”';
+    document.getElementById('author').textContent = '— ' + quotes[i][1];
+    document.body.style.background = color;
+    document.getElementById('new').style.background = color;
+  }
+
+  document.getElementById('new').onclick = newQuote;
+  newQuote();
+</script>
+</body>
+</html>
