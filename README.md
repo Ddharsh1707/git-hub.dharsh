@@ -30,3 +30,7 @@ Open any project's `index.html` in your browser. That's it.
 | 18 | [Image Slider](18-image-slider) | Auto-playing slider with arrows and dots |
 | 19 | [Typing Speed Test](19-typing-speed-test) | Measure your WPM and accuracy |
 | 20 | [Memory Card Game](20-memory-card-game) | Match all the pairs |
+
+## LeetCode
+
+Java solutions with explanations are in [leetcode-solutions](leetcode-solutions).
